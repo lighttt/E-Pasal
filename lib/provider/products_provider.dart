@@ -1,4 +1,4 @@
-import 'package:epasal/model/product.dart';
+import 'package:epasal/provider/product.dart';
 import 'package:flutter/material.dart';
 
 class Products with ChangeNotifier {
@@ -39,5 +39,23 @@ class Products with ChangeNotifier {
 
   List<Product> get items {
     return [..._items];
+  }
+
+  Product findById(String id) {
+    return items.firstWhere((prod) {
+      return prod.id == id;
+    });
+  }
+
+  void addProduct() {
+    _items.add(Product(
+        id: "five",
+        title: "Pant",
+        price: 1000,
+        description: "A red color tshirt you can wear at any occassion.",
+        imageURL:
+            "https://5.imimg.com/data5/LM/NA/MY-49778818/mens-round-neck-t-shirt-500x500.jpg",
+        isFavourite: false));
+    notifyListeners();
   }
 }
