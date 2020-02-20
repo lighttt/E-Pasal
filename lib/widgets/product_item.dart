@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:epasal/provider/cart_provider.dart';
 import 'package:epasal/provider/product.dart';
 import 'package:epasal/screens/product_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
-    print("Build created");
+    final cart = Provider.of<Cart>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10.0),
       child: GridTile(
@@ -43,7 +44,9 @@ class ProductItem extends StatelessWidget {
           ),
           trailing: IconButton(
             icon: Icon(Icons.shopping_cart),
-            onPressed: () {},
+            onPressed: () {
+              cart.addToCart(product.id, product.title, product.price);
+            },
             color: Theme.of(context).accentColor,
           ),
         ),
