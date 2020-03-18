@@ -56,15 +56,31 @@ class Products with ChangeNotifier {
     });
   }
 
-  void addProduct() {
-    _items.add(Product(
-        id: "five",
-        title: "Pant",
-        price: 1000,
-        description: "A red color tshirt you can wear at any occassion.",
-        imageURL:
-            "https://5.imimg.com/data5/LM/NA/MY-49778818/mens-round-neck-t-shirt-500x500.jpg",
-        isFavourite: false));
+  // ----- this function adds new product ----------
+  void addProduct(Product product) {
+    final newProduct = Product(
+        id: DateTime.now().toString(),
+        title: product.title,
+        price: product.price,
+        description: product.description,
+        imageURL: product.imageURL);
+    _items.add(newProduct);
+    //_items.insert(0, newProduct);
+    notifyListeners();
+  }
+
+  // ---- this function updates the current product ------
+  void updateProduct(String id, Product upProduct) {
+    final prodIndex = _items.indexWhere((prod) => prod.id == id);
+    if (prodIndex >= 0) {
+      _items[prodIndex] = upProduct;
+      notifyListeners();
+    }
+  }
+
+  // --- this function deletes a product -------
+  void deleteProduct(String id) {
+    _items.removeWhere((prod) => prod.id == id);
     notifyListeners();
   }
 }
