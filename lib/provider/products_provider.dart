@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:epasal/provider/product.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
   List<Product> _items = [
@@ -57,16 +60,38 @@ class Products with ChangeNotifier {
   }
 
   // ----- this function adds new product ----------
-  void addProduct(Product product) {
-    final newProduct = Product(
-        id: DateTime.now().toString(),
-        title: product.title,
-        price: product.price,
-        description: product.description,
-        imageURL: product.imageURL);
-    _items.add(newProduct);
-    //_items.insert(0, newProduct);
-    notifyListeners();
+  Future<void> addProduct(Product product) {
+    const url = "https://epasal-c2446.firebaseio.com/products.json";
+//    const test = "http://ip.jsontest.com/";
+//    http.Response response = await http.get(test);
+//    print(response.statusCode);
+    return http
+        .post(url,
+            body: json.encode({
+              'title': product.title,
+              'price': product.price,
+              'description': product.description,
+              'imageURL': product.imageURL,
+              'isFavourite': product.isFavourite,
+            }))
+        // then uses future so that after posting on url only other things are executed
+        .then((response) {
+      print(json.decode(response.body));
+      final newProduct = Product(
+          id: json.decode(response.body)['name'],
+          title: product.title,
+          price: product.price,
+          description: product.description,
+          imageURL: product.imageURL);
+      _items.add(newProduct);
+      //_items.insert(0, newProduct);
+      notifyListeners();
+    })
+        // if we get an error during post we catch error and execute accordingly
+        .catchError((error) {
+      print(error);
+      throw error;
+    });
   }
 
   // ---- this function updates the current product ------
